@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#0b3a6e">
+<title>Controle do Braço</title>
+<style>
+  :root {
+    --azul-escuro: #0b3a6e;
+    --azul: #1d6fd8;
+    --verde: #1f9d3a;
+    --vermelho: #d62828;
+    --fundo: #eaf3fb;
+    --card: #ffffff;
+    --texto: #12263f;
+    --suave: #5b7088;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; background: var(--fundo); color: var(--texto);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  body { min-height: 100vh; user-select: none; -webkit-user-select: none; }
+
+  header { background: linear-gradient(135deg, var(--azul-escuro), #14529c); color: #fff;
+    padding: 14px 20px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  header h1 { margin: 0; font-size: 1.35rem; letter-spacing: .5px; flex: 1 1 auto; }
+  .status { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+  .dot { width: 14px; height: 14px; border-radius: 50%; background: #9aa7b5; box-shadow: 0 0 0 3px rgba(255,255,255,.25); }
+  .dot.on { background: #35d05a; }
+  .dot.wait { background: #f4b400; }
+
+  button { font: inherit; border: 0; cursor: pointer; touch-action: manipulation; }
+  #btnConectar { background: #fff; color: var(--azul-escuro); padding: 10px 18px; border-radius: 10px; font-weight: 700; }
+  #btnConectar:active { transform: scale(.97); }
+
+  main { padding: 16px; max-width: 1100px; margin: 0 auto; }
+  .aviso { background: #fff3cd; border: 1px solid #f0d27a; color: #6b5200; padding: 12px 14px;
+    border-radius: 10px; margin-bottom: 14px; display: none; }
+
+  .grade { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .card { background: var(--card); border-radius: 16px; padding: 12px; box-shadow: 0 4px 14px rgba(11,58,110,.12); min-width: 0; }
+  .card h2 { margin: 0 0 2px; font-size: 1rem; color: var(--azul-escuro); display: flex; justify-content: space-between; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .nome { font-size: .8rem; color: var(--suave); margin-bottom: 6px; }
+  .badge { font-size: .72rem; padding: 2px 8px; border-radius: 999px; background: #dfe7ef; color: #38506b; font-weight: 700; }
+  .badge.f { background: #cfeed6; color: #11662a; }
+  .badge.r { background: #cfe0fa; color: #134a9a; }
+
+  .botoes { display: flex; flex-direction: column; gap: 8px; margin: 8px 0; }
+  .botoes button { padding: 12px 8px; border-radius: 12px; color: #fff; font-weight: 800; font-size: .95rem;
+    box-shadow: 0 2px 0 rgba(0,0,0,.2); display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .botoes button:active, .botoes button.ativo { transform: translateY(2px); box-shadow: none; filter: brightness(1.12); }
+  .b-f { background: var(--verde); }
+  .b-r { background: var(--azul); }
+  .b-s { background: var(--vermelho); }
+  .botoes button small { display: inline-block; font-size: 1.8rem; line-height: 1; margin: 0; pointer-events: none; }
+
+  .vel { display: flex; align-items: center; gap: 6px; font-size: .8rem; color: var(--suave); }
+  .vel input { flex: 1; min-width: 0; height: 28px; }
+  .vel b { min-width: 38px; text-align: right; color: var(--texto); }
+
+  .limites { display: flex; gap: 6px; margin-top: 8px; font-size: .68rem; }
+  .lim { flex: 1; text-align: center; padding: 4px 2px; border-radius: 8px; background: #eef3f8; color: var(--suave); }
+  .lim.hit { background: #fde2e2; color: #a01616; font-weight: 700; }
+
+  .rodape { margin-top: 16px; display: grid; grid-template-columns: 1fr; gap: 12px; }
+  #btnParaTudo { background: var(--vermelho); color: #fff; padding: 24px; border-radius: 16px;
+    font-size: 1.4rem; font-weight: 900; letter-spacing: 1px; box-shadow: 0 4px 0 #8f1717; }
+  #btnParaTudo:active { transform: translateY(3px); box-shadow: none; }
+  .opcoes { background: var(--card); border-radius: 14px; padding: 12px 16px; display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+  .opcoes label { display: flex; gap: 8px; align-items: center; font-weight: 600; }
+  .opcoes input[type=checkbox] { width: 22px; height: 22px; }
+
+  details { background: var(--card); border-radius: 14px; padding: 10px 16px; }
+  summary { cursor: pointer; font-weight: 700; color: var(--azul-escuro); }
+  #log { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .8rem; max-height: 180px; overflow: auto;
+    margin-top: 8px; white-space: pre-wrap; user-select: text; -webkit-user-select: text; color: #26415f; }
+  #log .err { color: #b3261e; }
+  #log .rx { color: #0f6b2c; }
+
+  body.desconectado .botoes button, body.desconectado .vel input { opacity: .45; }
+</style>
+</head>
+<body class="desconectado">
+
+<header>
+  <h1>CONTROLE DO BRAÇO</h1>
+  <div class="status"><span class="dot" id="dot"></span><span id="txtStatus">Desconectado</span></div>
+  <button id="btnConectar">Conectar Bluetooth</button>
+</header>
+
+<main>
+  <div class="aviso" id="aviso"></div>
+
+  <section class="grade" id="grade"></section>
+
+  <section class="rodape">
+    <button id="btnParaTudo">■ PARAR TUDO</button>
+    <div class="opcoes">
+      <label><input type="checkbox" id="chkSegurar"> Modo segurar (só move enquanto o botão está pressionado)</label>
+    </div>
+    <details>
+      <summary>Registro de comunicação</summary>
+      <div id="log"></div>
+    </details>
+  </section>
+</main>
+
+<script>
+(() => {
+  'use strict';
+
+  // ---- Configuração -------------------------------------------------
+  // Nordic UART Service, o mesmo configurado no firmware do ESP32
+  const SERVICE_UUID  = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
+  const CHAR_RX_UUID  = '6e400002-b5a3-f393-e0a9-e50e24dcca9e';   // tablet -> ESP32 (escrita)
+  const CHAR_TX_UUID  = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';   // ESP32 -> tablet (notificação)
+  const NOME_BLE      = 'Braco';                                  // nome anunciado pelo ESP32
+  const NOMES = ['Ombro (base)', 'Cotovelo', 'Garra'];   // edite como preferir
+  const HEARTBEAT_MS = 500;             // o Arduino para tudo se ficar ~1,5 s sem sinal
+
+  // ---- Estado --------------------------------------------------------
+  let device = null, characteristic = null, txChar = null;
+  let fila = Promise.resolve();
+  let rxBuf = '';
+  let heartbeat = null;
+  const motores = NOMES.map(() => ({ dir: 0, pwm: 200, fcMin: false, fcMax: false }));
+
+  const $ = (id) => document.getElementById(id);
+  const grade = $('grade');
+
+  // ---- Interface -------------------------------------------------------
+  NOMES.forEach((nome, i) => {
+    const n = i + 1;
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <h2>Circuito ${n} <span class="badge" id="badge${n}">Parado</span></h2>
+      <div class="nome">${nome}</div>
+      <div class="botoes">
+        <button class="b-f" data-m="${n}" data-c="F" aria-label="Avançar" title="Avançar"><small>▲</small></button>
+        <button class="b-r" data-m="${n}" data-c="R" aria-label="Recuar" title="Recuar"><small>▼</small></button>
+        <button class="b-s" data-m="${n}" data-c="S" aria-label="Parar" title="Parar"><small>■</small></button>
+      </div>
+      <div class="vel">Velocidade
+        <input type="range" min="35" max="100" value="78" id="vel${n}">
+        <b id="velTxt${n}">78%</b>
+      </div>
+      <div class="limites">
+        <div class="lim" id="limMin${n}">Fim de curso: recuado</div>
+        <div class="lim" id="limMax${n}">Fim de curso: avançado</div>
+      </div>`;
+    grade.appendChild(card);
+  });
+
+  function atualizarUI(n) {
+    const m = motores[n - 1];
+    const b = $('badge' + n);
+    b.className = 'badge' + (m.dir > 0 ? ' f' : m.dir < 0 ? ' r' : '');
+    b.textContent = m.dir > 0 ? 'Avançando' : m.dir < 0 ? 'Recuando' : 'Parado';
+    $('limMin' + n).classList.toggle('hit', m.fcMin);
+    $('limMax' + n).classList.toggle('hit', m.fcMax);
+    document.querySelectorAll(`button[data-m="${n}"]`).forEach(btn => {
+      const c = btn.dataset.c;
+      btn.classList.toggle('ativo', (c === 'F' && m.dir > 0) || (c === 'R' && m.dir < 0));
+    });
+  }
+
+  function setStatus(estado, texto) {
+    $('dot').className = 'dot ' + estado;
+    $('txtStatus').textContent = texto;
+    document.body.classList.toggle('desconectado', estado !== 'on');
+    $('btnConectar').textContent = estado === 'on' ? 'Desconectar' : 'Conectar Bluetooth';
+  }
+
+  function log(msg, cls = '') {
+    const l = $('log');
+    const linha = document.createElement('div');
+    if (cls) linha.className = cls;
+    linha.textContent = new Date().toLocaleTimeString('pt-BR') + '  ' + msg;
+    l.appendChild(linha);
+    while (l.childNodes.length > 150) l.removeChild(l.firstChild);
+    l.scrollTop = l.scrollHeight;
+  }
+
+  function mostrarAviso(txt) {
+    const a = $('aviso');
+    a.textContent = txt;
+    a.style.display = txt ? 'block' : 'none';
+  }
+
+  // ---- Envio (fila: BLE só aceita uma operação por vez) -----------------
+  function enviar(cmd) {
+    if (!characteristic) return Promise.resolve();
+    const dados = new TextEncoder().encode(cmd + '\n');
+    fila = fila
+      .then(() => characteristic.writeValueWithoutResponse
+        ? characteristic.writeValueWithoutResponse(dados)
+        : characteristic.writeValue(dados))
+      .catch(e => log('Erro ao enviar "' + cmd + '": ' + e.message, 'err'));
+    if (cmd !== 'H') log('→ ' + cmd);
+    return fila;
+  }
+
+  // ---- Recepção ---------------------------------------------------------
+  function aoReceber(ev) {
+    rxBuf += new TextDecoder().decode(ev.target.value);
+    let idx;
+    while ((idx = rxBuf.search(/[\r\n]/)) >= 0) {
+      const linha = rxBuf.slice(0, idx).trim();
+      rxBuf = rxBuf.slice(idx + 1);
+      if (linha) tratar(linha);
+    }
+  }
+
+  function tratar(linha) {
+    log('← ' + linha, 'rx');
+    const p = linha.split(':');
+    if (p[0] === 'ST' && p.length >= 6) {
+      const n = parseInt(p[1], 10);
+      const m = motores[n - 1];
+      if (!m) return;
+      m.dir = parseInt(p[2], 10);
+      m.pwm = parseInt(p[3], 10);
+      m.fcMin = p[4] === '1';
+      m.fcMax = p[5] === '1';
+      atualizarUI(n);
+    } else if (p[0] === 'LIM') {
+      mostrarAviso('Circuito ' + p[1] + ' parou: fim de curso ' + (p[2] === 'MAX' ? 'avançado' : 'recuado') + ' atingido.');
+    } else if (p[0] === 'WD') {
+      mostrarAviso('Motores parados por perda de comunicação.');
+    } else if (p[0] === 'TMAX') {
+      mostrarAviso('Circuito ' + p[1] + ' parou: tempo máximo de funcionamento contínuo.');
+    }
+  }
+
+  // ---- Conexão ----------------------------------------------------------
+  async function conectar() {
+    if (!navigator.bluetooth) {
+      mostrarAviso('Este navegador não suporta Web Bluetooth. Use o Google Chrome no Android (ou o app Bluefy no iPad/iPhone) e abra a página por HTTPS.');
+      return;
+    }
+    try {
+      mostrarAviso('');
+      setStatus('wait', 'Procurando…');
+      device = await navigator.bluetooth.requestDevice({
+        filters: [{ services: [SERVICE_UUID] }, { namePrefix: NOME_BLE }],
+        optionalServices: [SERVICE_UUID]
+      });
+      device.addEventListener('gattserverdisconnected', aoDesconectar);
+      setStatus('wait', 'Conectando…');
+      const server  = await device.gatt.connect();
+      const service = await server.getPrimaryService(SERVICE_UUID);
+      characteristic = await service.getCharacteristic(CHAR_RX_UUID);   // escrita
+      txChar = await service.getCharacteristic(CHAR_TX_UUID);           // notificações
+      await txChar.startNotifications();
+      txChar.addEventListener('characteristicvaluechanged', aoReceber);
+
+      setStatus('on', 'Conectado' + (device.name ? ' · ' + device.name : ''));
+      log('Conectado a ' + (device.name || 'dispositivo'));
+      heartbeat = setInterval(() => enviar('H'), HEARTBEAT_MS);
+      await enviar('X');   // começa sempre parado
+      await enviar('?');
+    } catch (e) {
+      log('Falha ao conectar: ' + e.message, 'err');
+      setStatus('', 'Desconectado');
+      if (e.name !== 'NotFoundError') mostrarAviso('Não foi possível conectar: ' + e.message);
+      limpar();
+    }
+  }
+
+  function limpar() {
+    clearInterval(heartbeat); heartbeat = null;
+    characteristic = null;
+    txChar = null;
+    fila = Promise.resolve();
+    motores.forEach((m, i) => { m.dir = 0; m.fcMin = m.fcMax = false; atualizarUI(i + 1); });
+  }
+
+  function aoDesconectar() {
+    log('Bluetooth desconectado', 'err');
+    setStatus('', 'Desconectado');
+    limpar();
+  }
+
+  async function desconectar() {
+    try { await enviar('X'); } catch (_) {}
+    if (device && device.gatt.connected) device.gatt.disconnect();
+  }
+
+  $('btnConectar').addEventListener('click', () => {
+    if (device && device.gatt && device.gatt.connected) desconectar(); else conectar();
+  });
+
+  // ---- Comandos dos botões ---------------------------------------------
+  const modoSegurar = () => $('chkSegurar').checked;
+
+  grade.addEventListener('pointerdown', (ev) => {
+    const btn = ev.target.closest('button[data-m]');
+    if (!btn) return;
+    ev.preventDefault();
+    btn.setPointerCapture && btn.setPointerCapture(ev.pointerId);
+    enviar(`M${btn.dataset.m}:${btn.dataset.c}`);
+  });
+
+  const soltar = (ev) => {
+    if (!modoSegurar()) return;
+    const btn = ev.target.closest && ev.target.closest('button[data-m]');
+    if (!btn || btn.dataset.c === 'S') return;
+    enviar(`M${btn.dataset.m}:S`);
+  };
+  grade.addEventListener('pointerup', soltar);
+  grade.addEventListener('pointercancel', soltar);
+
+  // velocidade (com pequeno atraso para não inundar o Bluetooth)
+  const temporizadores = {};
+  NOMES.forEach((_, i) => {
+    const n = i + 1;
+    $('vel' + n).addEventListener('input', (e) => {
+      const pct = parseInt(e.target.value, 10);
+      $('velTxt' + n).textContent = pct + '%';
+      clearTimeout(temporizadores[n]);
+      temporizadores[n] = setTimeout(() => enviar(`M${n}:V${Math.round(pct * 2.55)}`), 150);
+    });
+  });
+
+  // parada geral
+  $('btnParaTudo').addEventListener('pointerdown', (e) => { e.preventDefault(); enviar('X'); enviar('X'); });
+
+  // segurança: se a tela sair de foco ou a página fechar, para tudo
+  document.addEventListener('visibilitychange', () => { if (document.hidden) enviar('X'); });
+  window.addEventListener('pagehide', () => enviar('X'));
+  document.addEventListener('contextmenu', e => e.preventDefault());
+
+  if (!navigator.bluetooth) {
+    mostrarAviso('Web Bluetooth não disponível neste navegador/endereço. Use o Chrome (Android) com a página aberta por HTTPS, ou o app Bluefy no iPad/iPhone.');
+  }
+})();
+</script>
+</body>
+</html>

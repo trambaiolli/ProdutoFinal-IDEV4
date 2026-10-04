@@ -1,0 +1,39 @@
+BRACO HIDRAULICO ESP32 - LIGACOES
+
+ESP32 -> DRIVER 1 (TB6612FNG)
+GPIO25 -> PWMA (Motor 1)
+GPIO26 -> AIN1
+GPIO27 -> AIN2
+AO1/AO2 -> Motor 1
+
+GPIO14 -> PWMB (Motor 2)
+GPIO16 -> BIN1
+GPIO17 -> BIN2
+BO1/BO2 -> Motor 2
+
+ESP32 -> DRIVER 2 (TB6612FNG)
+GPIO33 -> PWMA (Motor 3)
+GPIO18 -> AIN1
+GPIO19 -> AIN2
+AO1/AO2 -> Motor 3
+
+GPIO23 -> STBY dos dois drivers
+10k entre STBY e GND em cada driver
+
+FINS DE CURSO (COM -> GND; NC -> GPIO)
+Motor 1 avanço -> GPIO32
+Motor 1 recuo  -> GPIO13
+Motor 2 avanço -> GPIO21
+Motor 2 recuo  -> GPIO22
+Motor 3 avanço -> GPIO4
+Motor 3 recuo  -> GPIO5
+
+ALIMENTACAO
+ESP32 -> USB
+TB6612 VCC -> 3,3 V lógico
+Fonte motores (+) -> chave física -> VM dos dois drivers
+Fonte motores (-) -> GND comum
+ESP32 GND -> GND comum
+Drivers GND -> GND comum
+
+NUNCA ligar VM dos motores ao pino 3,3 V/5 V do ESP32.

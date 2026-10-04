@@ -1,0 +1,10 @@
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#111827;color:#f9fafb}
+header{text-align:center;padding:18px;background:#0f172a}header h1{margin:0}header p{margin:6px 0 0;opacity:.75}
+main{max-width:1050px;margin:auto;padding:16px}.status{display:flex;justify-content:center;gap:8px;align-items:center;margin-bottom:16px}
+#dot{width:12px;height:12px;border-radius:50%;background:#ef4444}#dot.ok{background:#22c55e}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.motor{background:#1f2937;border:1px solid #374151;border-radius:16px;padding:16px}
+.motor h2{text-align:center}.telemetry{display:grid;grid-template-columns:1fr 1fr;gap:8px}.badge{background:#111827;padding:8px;border-radius:8px;text-align:center;font-size:.85rem}
+.badge.active{background:#7f1d1d}input[type=range]{width:100%}.buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+button{border:0;border-radius:12px;padding:17px;font-size:1rem;font-weight:bold;touch-action:none}.advance{background:#16a34a;color:white}.reverse{background:#2563eb;color:white}
+.stop{grid-column:1/-1;background:#dc2626;color:white}.emergency{width:100%;margin-top:16px;background:#991b1b;color:white;font-size:1.2rem}.help{text-align:center;opacity:.7}
+@media(max-width:760px){.grid{grid-template-columns:1fr}}

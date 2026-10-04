@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>Braço Hidráulico ESP32</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Braço Hidráulico ESP32</h1>
+  <p>Controle de três motores</p>
+</header>
+<main>
+  <div class="status"><span id="dot"></span><strong id="connection">Conectando...</strong></div>
+  <div id="motors" class="grid"></div>
+  <button id="stopAll" class="emergency">PARAR TODOS</button>
+  <p class="help">Segure Avançar ou Recuar. Ao soltar, o motor para.</p>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
