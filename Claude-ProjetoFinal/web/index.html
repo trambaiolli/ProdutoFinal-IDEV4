@@ -1,15 +1,56 @@
 <!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#102b46"><title>Controle de três motores</title>
-  <link rel="stylesheet" href="style.css"><script src="app.js" defer></script>
-</head>
-<body><main>
-  <header><p class="eyebrow">PROJETO DE ROBÓTICA • 3 CIRCUITOS</p><h1>Controle do braço hidráulico</h1><p>Tablet → Bluetooth → Arduino → três motores → seringas</p></header>
-  <section class="card" aria-labelledby="connectionTitle"><h2 id="connectionTitle">Conexão</h2><p id="connection" role="status">Desconectado</p><p id="support" class="hint"></p><div class="row"><button id="connect">Conectar Bluetooth</button><button id="disconnect" class="secondary" disabled>Desconectar</button></div><p class="hint">Selecione seu HM-10. Mantenha todo o mecanismo à vista.</p></section>
-  <div id="motors"></div>
-  <section class="card"><button id="stopAll" class="stop" disabled>■ PARAR TODOS OS MOTORES</button><p class="hint">Solte cada botão para parar aquele motor. PARAR TODOS é uma parada por software; mantenha acessível a chave física da fonte dos motores.</p></section>
-  <section class="card"><h2>Registro</h2><pre id="log" aria-live="polite">Painel iniciado.</pre></section>
-  <footer>Arduino Uno • HM-10 BLE • 2 drivers TB6612FNG • 3 motores independentes</footer>
-</main></body></html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#102b46" />
+    <title>Controle de três motores</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">PROJETO DE ROBÓTICA • 3 CIRCUITOS</p>
+        <h1>Controle do braço hidráulico</h1>
+        <p>Tablet → Bluetooth → Arduino → três motores → seringas</p>
+      </header>
+      <section class="card" aria-labelledby="connectionTitle">
+        <h2 id="connectionTitle">Conexão</h2>
+        <p id="connection" role="status">Desconectado</p>
+        <p id="support" class="hint"></p>
+        <div class="row">
+          <button id="connect">Conectar Bluetooth</button
+          ><button id="disconnect" class="secondary" disabled>
+            Desconectar</button
+          ><button id="simulate" class="secondary" type="button">
+            Iniciar simulação
+          </button>
+        </div>
+        <p id="simulationNotice" class="simulation-notice" hidden>
+          Simulação ilustrativa ativa. Nenhum motor físico será acionado.
+        </p>
+        <p class="hint">
+          Selecione seu HM-10. Mantenha todo o mecanismo à vista.
+        </p>
+      </section>
+      <div id="motors"></div>
+      <section class="card">
+        <button id="stopAll" class="stop" disabled>
+          ■ PARAR TODOS OS MOTORES
+        </button>
+        <p class="hint">
+          Solte cada botão para parar aquele motor. PARAR TODOS é uma parada por
+          software; mantenha acessível a chave física da fonte dos motores.
+        </p>
+      </section>
+      <section class="card">
+        <h2>Registro</h2>
+        <pre id="log" aria-live="polite">Painel iniciado.</pre>
+      </section>
+      <footer>
+        Arduino Uno • HM-10 BLE • 2 drivers TB6612FNG • 3 motores independentes
+      </footer>
+    </main>
+  </body>
+</html>

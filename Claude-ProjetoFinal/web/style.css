@@ -1,1 +1,328 @@
-:root{color-scheme:light;font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#102b46;background:#edf4f8}*{box-sizing:border-box}body{margin:0}main{max-width:900px;margin:0 auto;padding:28px 20px}header{margin:12px 0 28px}h1{font-size:clamp(1.8rem,4vw,2.7rem);line-height:1.12;margin:8px 0 14px}h2{font-size:1.15rem;margin:0 0 16px}.eyebrow{letter-spacing:.12em;font-size:.75rem;font-weight:800;color:#047b87}.card{background:white;border:1px solid #dae5ec;border-radius:18px;padding:24px;margin-bottom:18px;box-shadow:0 5px 20px #102b4607}.row,.controls{display:flex;gap:14px;flex-wrap:wrap}button{font:inherit;font-weight:700;border:0;border-radius:12px;background:#102b46;color:white;padding:16px 20px;min-height:54px;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}button:focus-visible,input:focus-visible{outline:3px solid #e19714;outline-offset:4px}.secondary{background:#e5eef4;color:#102b46}.controls{margin:20px 0 14px}.motion{flex:1;min-width:190px;min-height:108px;font-size:1.3rem;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}.motion small{font-size:.8rem;font-weight:400}.advance{background:#087b66}.retreat{background:#1461a0}.motion.active{box-shadow:0 0 0 4px #f3ad30 inset}.stop{width:100%;background:#b32a39;font-size:1.4rem;min-height:70px}input[type=range]{display:block;width:100%;margin:18px 0;accent-color:#047b87}output{font-weight:800}.hint{font-size:.9rem;color:#526a7c;line-height:1.5}.telemetry{padding:8px 16px;background:#eff7fa;border-radius:12px}.telemetry p{font-size:.92rem}#connection{font-weight:800}#log{font-size:.8rem;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere;max-height:220px;overflow:auto}footer{font-size:.8rem;color:#526a7c;text-align:center;margin:25px 0}@media(max-width:480px){main{padding:18px 12px}.card{padding:18px}.row button{width:100%}.motion{min-width:120px;font-size:1.1rem}}
+#motors {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 18px;
+}
+#motors > .card {
+  margin: 0;
+}
+:root {
+  color-scheme: light;
+  font-family:
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    sans-serif;
+  color: #102b46;
+  background: #edf4f8;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 28px 20px;
+}
+header {
+  margin: 12px 0 28px;
+}
+h1 {
+  font-size: clamp(1.8rem, 4vw, 2.7rem);
+  line-height: 1.12;
+  margin: 8px 0 14px;
+}
+h2 {
+  font-size: 1.15rem;
+  margin: 0 0 16px;
+}
+.eyebrow {
+  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #047b87;
+}
+.card {
+  background: white;
+  border: 1px solid #dae5ec;
+  border-radius: 18px;
+  padding: 24px;
+  margin-bottom: 18px;
+  box-shadow: 0 5px 20px #102b4607;
+}
+.row,
+.controls {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+button {
+  font: inherit;
+  font-weight: 700;
+  border: 0;
+  border-radius: 12px;
+  background: #102b46;
+  color: white;
+  padding: 16px 20px;
+  min-height: 54px;
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid #e19714;
+  outline-offset: 4px;
+}
+.secondary {
+  background: #e5eef4;
+  color: #102b46;
+}
+.controls {
+  margin: 20px 0 14px;
+}
+.motion {
+  flex: 1;
+  min-width: 80px;
+  min-height: 108px;
+  font-size: 2.5rem;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+.advance {
+  background: #087b66;
+}
+.retreat {
+  background: #1461a0;
+}
+.motion.active {
+  box-shadow: 0 0 0 4px #f3ad30 inset;
+}
+.simulation-notice {
+  padding: 10px 12px;
+  border-left: 4px solid #e19714;
+  background: #fff7df;
+  color: #493b16;
+}
+.simulation-view {
+  display: none;
+  align-items: center;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px 12px;
+  margin: 14px 0;
+  padding: 12px;
+  border: 1px solid #dae5ec;
+  border-radius: 8px;
+  background: #f4f8fa;
+}
+body.simulation-active .simulation-view {
+  display: grid;
+}
+.sim-motor {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 96px;
+  height: 58px;
+}
+.sim-motor-case {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 44px;
+  border: 2px solid #526a7c;
+  border-radius: 9px;
+  background: #dce5e9;
+  box-shadow: inset 0 0 0 3px #f4f8fa;
+}
+.sim-motor-case::after {
+  position: absolute;
+  inset: 7px 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0 8px,
+    #526a7c55 8px 10px
+  );
+  content: '';
+}
+.sim-wire {
+  position: absolute;
+  top: 0;
+  width: 11px;
+  height: 12px;
+  border-top: 2px solid;
+  border-left: 2px solid;
+  border-top-left-radius: 7px;
+}
+.sim-wire-red {
+  left: 27px;
+  border-color: #b32a39;
+}
+.sim-wire-black {
+  left: 43px;
+  border-color: #102b46;
+}
+.sim-shaft {
+  position: absolute;
+  top: 25px;
+  left: 66px;
+  width: 24px;
+  height: 8px;
+  border-radius: 0 4px 4px 0;
+  background: #526a7c;
+}
+.sim-rotor {
+  position: relative;
+  display: block;
+  z-index: 1;
+  width: 22px;
+  height: 22px;
+  border: 2px solid #087b66;
+  border-radius: 50%;
+  background: #f4f8fa;
+}
+.sim-rotor::before {
+  position: absolute;
+  top: -3px;
+  left: 7px;
+  width: 4px;
+  height: 24px;
+  border-radius: 3px;
+  background: #087b66;
+  content: '';
+}
+.sim-rotor::after {
+  position: absolute;
+  top: 7px;
+  left: 9px;
+  width: 10px;
+  height: 4px;
+  border-radius: 2px;
+  background: #b32a39;
+  content: '';
+}
+.sim-motor.is-running .sim-rotor {
+  animation: sim-spin 0.65s linear infinite;
+}
+@keyframes sim-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.sim-cylinder-wrap {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+.sim-label {
+  display: block;
+  margin-bottom: 6px;
+  color: #526a7c;
+  font-size: 0.75rem;
+}
+.sim-cylinder {
+  height: 20px;
+  overflow: hidden;
+  border: 2px solid #102b46;
+  border-radius: 4px;
+  background: white;
+}
+.sim-fill {
+  display: block;
+  width: 50%;
+  height: 100%;
+  background: #087b66;
+  transition: width 0.15s linear;
+}
+.sim-position {
+  min-width: 38px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-align: right;
+}
+.stop {
+  width: 100%;
+  background: #b32a39;
+  font-size: 1.4rem;
+  min-height: 70px;
+}
+#motors .stop {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 70px;
+  min-height: 70px;
+  padding: 0;
+  font-size: 2.2rem;
+}
+input[type='range'] {
+  display: block;
+  width: 100%;
+  margin: 18px 0;
+  accent-color: #047b87;
+}
+output {
+  font-weight: 800;
+}
+.hint {
+  font-size: 0.9rem;
+  color: #526a7c;
+  line-height: 1.5;
+}
+.telemetry {
+  padding: 8px 16px;
+  background: #eff7fa;
+  border-radius: 12px;
+}
+.telemetry p {
+  font-size: 0.92rem;
+}
+#connection {
+  font-weight: 800;
+}
+#log {
+  font-size: 0.8rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 220px;
+  overflow: auto;
+}
+footer {
+  font-size: 0.8rem;
+  color: #526a7c;
+  text-align: center;
+  margin: 25px 0;
+}
+@media (max-width: 760px) {
+  #motors {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 480px) {
+  main {
+    padding: 18px 12px;
+  }
+  #motors {
+    grid-template-columns: 1fr;
+  }
+  .card {
+    padding: 18px;
+  }
+  .row button {
+    width: 100%;
+  }
+  .motion {
+    min-width: 64px;
+    font-size: 2.2rem;
+  }
+}
